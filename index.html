@@ -63,6 +63,11 @@ select {
 button {
   user-select: none;
 }
+    input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
 
 .shell {
   min-height: 100vh;
