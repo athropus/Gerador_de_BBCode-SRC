@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de BBCode — SRC</title>
+  <link rel="icon" type="image/png" href="https://i.imgur.com/3CuSJaU.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+/* ===== CSS incorporado de style.css ===== */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #07111f;
+  --sidebar: #09182a;
+  --panel: #0d1d31;
+  --panel-soft: #10243b;
+  --field: #081726;
+  --line: #203b57;
+  --line-soft: rgba(111, 151, 189, 0.16);
+
+  --blue: #0b79c9;
+  --blue-bright: #1597e5;
+  --blue-soft: rgba(21, 151, 229, 0.12);
+
+  --pink: #e83cb9;
+  --pink-soft: rgba(232, 60, 185, 0.11);
+
+  --text: #f6f8fb;
+  --muted: #8ea3b9;
+  --muted-2: #637a91;
+  --danger: #c93b58;
+  --success: #38b77b;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(circle at 88% 6%, rgba(11, 121, 201, 0.15), transparent 30%),
+    radial-gradient(circle at 3% 88%, rgba(232, 60, 185, 0.06), transparent 24%),
+    var(--bg);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  user-select: none;
+}
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+}
+
+.sidebar {
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  padding: 28px 20px;
+  background:
+    linear-gradient(180deg, rgba(13, 35, 58, .66), transparent 28%),
+    var(--sidebar);
+  border-right: 1px solid var(--line);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.brand-mark {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  background: #0b2138;
+  border: 1px solid #235074;
+  overflow: hidden;
+}
+
+.brand-mark::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--pink);
+}
+
+.brand-mark span {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  color: #fff;
+}
+
+.brand-text {
+  display: grid;
+  gap: 2px;
+}
+
+.brand-text strong {
+  font-size: 17px;
+  letter-spacing: -.02em;
+}
+
+.brand-text small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.brand-line {
+  height: 1px;
+  margin: 24px 0;
+  background: linear-gradient(90deg, var(--blue), rgba(232, 60, 185, .55), transparent);
+}
+
+.nav-label {
+  margin: 0 0 10px 10px;
+  color: var(--muted-2);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.module-nav {
+  display: grid;
+  gap: 8px;
+}
+
+.nav-item {
+  position: relative;
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  transition: .18s ease;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, .025);
+  color: var(--text);
+}
+
+.nav-item.ativa {
+  background: linear-gradient(90deg, rgba(11, 121, 201, .17), rgba(11, 121, 201, .05));
+  border-color: rgba(21, 151, 229, .28);
+  color: var(--text);
+}
+
+.nav-item.ativa::after {
+  content: "";
+  position: absolute;
+  right: -21px;
+  width: 3px;
+  height: 34px;
+  border-radius: 4px 0 0 4px;
+  background: var(--pink);
+}
+
+.nav-number {
+  height: 34px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, .035);
+  border: 1px solid rgba(255, 255, 255, .05);
+  color: var(--blue-bright);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.nav-item.ativa .nav-number {
+  background: var(--blue-soft);
+  border-color: rgba(21, 151, 229, .18);
+}
+
+.nav-item strong,
+.nav-item small {
+  display: block;
+}
+
+.nav-item strong {
+  font-size: 13px;
+}
+
+.nav-item small {
+  margin-top: 3px;
+  color: var(--muted-2);
+  font-size: 10px;
+}
+
+.sidebar-info {
+  margin-top: 30px;
+  padding: 13px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .025);
+  border: 1px solid rgba(255, 255, 255, .05);
+  display: grid;
+  grid-template-columns: 10px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--success);
+  box-shadow: 0 0 10px rgba(56, 183, 123, .45);
+}
+
+.sidebar-info strong,
+.sidebar-info small {
+  display: block;
+}
+
+.sidebar-info strong {
+  font-size: 11px;
+}
+
+.sidebar-info small {
+  margin-top: 2px;
+  color: var(--muted-2);
+  font-size: 9px;
+}
+
+.workspace {
+  width: min(1140px, calc(100% - 50px));
+  margin: 0 auto;
+  padding: 34px 0 42px;
+}
+
+
+.top-banner {
+  width: min(720px, 100%);
+  margin: 0 auto 20px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(21, 151, 229, .22);
+  background: var(--panel);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .10);
+}
+
+.top-banner img {
+  display: block;
+  width: 100%;
+  height: 200px;
+object-fit: cover;
+}
+
+.topbar {
+  min-height: 92px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 26px;
+}
+
+.eyebrow,
+.step-kicker {
+  margin: 0;
+  color: var(--pink);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .15em;
+}
+
+.topbar h1 {
+  margin: 7px 0 5px;
+  font-size: clamp(25px, 4vw, 35px);
+  font-weight: 700;
+  letter-spacing: -.025em;
+}
+
+.topbar > div > p:last-child {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.topbar-badges {
+  display: flex;
+  gap: 8px;
+}
+
+.badge {
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.badge.blue {
+  color: #a8ddff;
+  background: var(--blue-soft);
+  border: 1px solid rgba(21, 151, 229, .21);
+}
+
+.badge.pink {
+  color: #ffb5ea;
+  background: var(--pink-soft);
+  border: 1px solid rgba(232, 60, 185, .2);
+}
+
+.painel {
+  display: none;
+}
+
+.painel.ativo {
+  display: block;
+}
+
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 110px;
+  margin-bottom: 18px;
+  padding: 18px 24px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(110deg, rgba(11, 121, 201, .13), transparent 58%),
+    var(--panel);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--blue-bright), var(--pink));
+}
+
+.hero-card h2 {
+  margin: 8px 0 7px;
+  font-size: 24px;
+  letter-spacing: -.02em;
+}
+
+.hero-card p {
+  max-width: 650px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+  font-size: 13px;
+}
+
+.hero-symbol {
+  flex: 0 0 auto;
+  width: 78px;
+  height: 78px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  color: rgba(255,255,255,.82);
+  font-size: 50px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  background:
+    linear-gradient(135deg, rgba(11,121,201,.2), rgba(232,60,185,.08));
+  border: 1px solid rgba(21,151,229,.18);
+}
+
+
+.content-grid.two {
+  display: grid;
+  grid-template-columns: minmax(0, .84fr) minmax(0, 1.16fr);
+  gap: 18px;
+}
+
+.card {
+  margin-bottom: 18px;
+  padding: 21px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .07);
+}
+
+.section-title,
+.section-head,
+.subsection-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-head,
+.subsection-head {
+  justify-content: space-between;
+}
+
+.section-title {
+  margin-bottom: 18px;
+}
+
+.section-title.compact {
+  margin-bottom: 0;
+}
+
+.section-index {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: #9ed9ff;
+  background: var(--blue-soft);
+  border: 1px solid rgba(21, 151, 229, .16);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.pink-index {
+  color: #ffb6ea;
+  background: var(--pink-soft);
+  border-color: rgba(232, 60, 185, .17);
+}
+
+.section-title h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.section-title p {
+  margin: 4px 0 0;
+  color: var(--muted-2);
+  font-size: 10px;
+}
+
+.grid-2,
+.grid-3 {
+  display: grid;
+  gap: 12px;
+}
+
+.grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.campo {
+  margin: 13px 0;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 7px;
+  color: #c6d3df;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  color: var(--text);
+  background: var(--field);
+  border: 1px solid #28445f;
+  border-radius: 10px;
+  padding: 11px 12px;
+  outline: none;
+  transition: .15s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #536d86;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(21, 151, 229, .7);
+  box-shadow: 0 0 0 3px rgba(21, 151, 229, .08);
+}
+
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.action-row {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.action-row.no-margin {
+  margin-top: 0;
+}
+
+.btn,
+.add-btn,
+.icon-btn {
+  border: 0;
+  cursor: pointer;
+  transition: .16s ease;
+}
+
+.btn {
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.btn.primary {
+  color: #fff;
+  background: var(--blue);
+  box-shadow: 0 6px 18px rgba(11, 121, 201, .14);
+}
+
+.btn.primary:hover {
+  background: var(--blue-bright);
+}
+
+.btn.ghost {
+  color: #b6c7d7;
+  background: rgba(255,255,255,.035);
+  border: 1px solid #2c4963;
+}
+
+.btn.copy {
+  color: #fff;
+  background: #173652;
+  border: 1px solid #315e80;
+}
+
+.add-btn {
+  flex: 0 0 auto;
+  border-radius: 9px;
+  padding: 9px 12px;
+  color: #afe1ff;
+  background: rgba(11, 121, 201, .11);
+  border: 1px solid rgba(21, 151, 229, .2);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.add-btn:hover {
+  background: rgba(11, 121, 201, .18);
+}
+
+.add-btn.small {
+  padding: 8px 10px;
+}
+
+.dynamic-list {
+  display: grid;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.dynamic-item {
+  position: relative;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(5, 17, 29, .5);
+  border: 1px solid #203c55;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 38px;
+  gap: 9px;
+}
+
+.item-fields {
+  display: grid;
+  gap: 8px;
+}
+
+.item-fields.one {
+  grid-template-columns: 1fr;
+}
+
+.item-fields.two {
+  grid-template-columns: .9fr 1.5fr;
+}
+
+.item-fields.three {
+  grid-template-columns: .6fr .95fr 1.7fr;
+}
+
+.icon-btn {
+  width: 38px;
+  min-height: 38px;
+  border-radius: 9px;
+  color: #ffc1cf;
+  background: rgba(201, 59, 88, .12);
+  border: 1px solid rgba(201, 59, 88, .2);
+  font-weight: 900;
+}
+
+.icon-btn:hover {
+  background: rgba(201, 59, 88, .22);
+}
+
+.subsection-head {
+  margin: 20px 0 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.subsection-head strong,
+.subsection-head small {
+  display: block;
+}
+
+.subsection-head strong {
+  font-size: 12px;
+}
+
+.subsection-head small {
+  margin-top: 3px;
+  color: var(--muted-2);
+  font-size: 9px;
+}
+
+.highlight-card {
+  position: relative;
+  overflow: hidden;
+  padding: 14px;
+  border-radius: 13px;
+  background:
+    linear-gradient(180deg, rgba(11, 121, 201, .08), transparent),
+    #091827;
+  border: 1px solid #23425c;
+}
+
+.highlight-card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--pink));
+  opacity: .65;
+}
+
+.highlight-card span {
+  display: block;
+  color: var(--pink);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .07em;
+}
+
+.highlight-card input + input {
+  margin-top: 8px;
+}
+
+
+.highlight-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.destaque-eye {
+  position: relative;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(232, 60, 185, .32);
+  background: rgba(232, 60, 185, .15);
+  cursor: pointer;
+  transition: .16s ease;
+}
+
+.destaque-eye::before {
+  content: "👁";
+  font-size: 14px;
+  line-height: 1;
+  filter: grayscale(1) brightness(2);
+}
+
+.destaque-eye:hover {
+  background: rgba(232, 60, 185, .24);
+}
+
+.destaque-eye.desativada {
+  opacity: .45;
+  background: rgba(99, 122, 145, .08);
+  border-color: rgba(99, 122, 145, .18);
+}
+
+.destaque-eye.desativada::before {
+  content: "⊘";
+  color: var(--muted);
+  filter: none;
+  font-size: 17px;
+}
+
+.highlight-card.desativado {
+  opacity: .58;
+}
+
+.highlight-card.desativado input {
+  opacity: .55;
+}
+
+.output-card {
+  background:
+    linear-gradient(180deg, rgba(232, 60, 185, .025), transparent 36%),
+    var(--panel);
+}
+
+.saida {
+  width: 100%;
+  min-height: 330px;
+  margin-top: 17px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.saida.tall {
+  min-height: 390px;
+}
+
+.output-actions {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.inline-status {
+  color: var(--muted-2);
+  font-size: 10px;
+}
+
+.inline-status.ok {
+  color: #67dba5;
+}
+
+
+footer {
+  margin-top: 26px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.footer-dev {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.footer-dev i {
+  color: var(--pink);
+  margin: 0 5px;
+}
+
+.footer-dev strong {
+  color: var(--pink);
+}
+
+.footer-rights {
+  font-size: 9px;
+  color: var(--muted-2);
+}
+@media (max-width: 980px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    min-height: auto;
+    position: static;
+    padding: 18px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .brand-line,
+  .nav-label,
+  .sidebar-info {
+    display: none;
+  }
+
+  .module-nav {
+    margin-top: 14px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .nav-item.ativa::after {
+    right: auto;
+    left: 12px;
+    bottom: -1px;
+    width: calc(100% - 24px);
+    height: 2px;
+  }
+
+  .workspace {
+    width: min(100% - 28px, 980px);
+    padding-top: 24px;
+  }
+}
+
+@media (max-width: 760px) {
+  .topbar,
+  .section-head,
+  .subsection-head,
+  .output-actions,
+  footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topbar-badges {
+    align-self: flex-start;
+  }
+
+  .module-nav,
+  .grid-2,
+  .grid-3,
+  .content-grid.two {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-symbol {
+    display: none;
+  }
+
+  .item-fields.two,
+  .item-fields.three {
+    grid-template-columns: 1fr;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <span>INS</span>
+        </div>
+
+        <div class="brand-text">
+          <strong>Gerador de BBCode</strong>
+          <small>Sistema automatizado para envio de MPs</small>
+        </div>
+      </div>
+
+      <div class="brand-line"></div>
+
+      <p class="nav-label">MÓDULOS</p>
+
+      <nav class="module-nav">
+        <button class="nav-item ativa" data-alvo="reuniao" data-title="Reunião Geral" data-subtitle="Convocação por Mensagem Privada">
+          <span class="nav-number">
+  <i class="bi bi-people-fill"></i>
+</span>
+          <span>
+            <strong>Reunião Geral</strong>
+            <small>Mensagem Privada</small>
+          </span>
+        </button>
+
+        <button class="nav-item" data-alvo="novidades" data-title="Novidades da Semana" data-subtitle="Resumo semanal para os Instrutores">
+          <span class="nav-number">
+  <i class="bi bi-newspaper"></i>
+</span>
+          <span>
+            <strong>Novidades</strong>
+            <small>Mensagem Privada</small>
+          </span>
+        </button>
+
+        <button class="nav-item" data-alvo="destaque-semanal" data-title="Destaque Semanal" data-subtitle="Reconhecimento por Mensagem Privada">
+          <span class="nav-number">
+  <i class="bi bi-award-fill"></i>
+</span>
+          <span>
+            <strong>Destaque Semanal</strong>
+            <small>Mensagem Privada</small>
+          </span>
+        </button>
+
+        <button class="nav-item" data-alvo="ata" data-title="Ata da Reunião" data-subtitle="Registro completo para publicação no fórum">
+          <span class="nav-number">
+  <i class="bi bi-file-earmark-text-fill"></i>
+</span>
+          <span>
+            <strong>Ata da Reunião</strong>
+            <small>Publicação no Fórum</small>
+          </span>
+        </button>
+      </nav>
+
+      <div class="sidebar-info">
+        <span class="status-dot"></span>
+        <div>
+          <strong>Execução local</strong>
+          <small>Nenhum dado é enviado</small>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+
+      <div class="top-banner">
+        <img src="https://i.imgur.com/oeEiVVI.jpeg" alt="Setor de Relações Comunicativas">
+      </div>
+
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">SETOR DE RELAÇÕES COMUNICATIVAS</p>
+          <h1 id="moduleTitle">Reunião Geral</h1>
+          <p id="moduleSubtitle">Convocação por Mensagem Privada</p>
+        </div>
+
+        <div class="topbar-badges">
+          <span class="badge blue">CIA • INS</span>
+          <span class="badge pink">SRC</span>
+        </div>
+      </header>
+
+      <!-- REUNIÃO -->
+      <section id="reuniao" class="painel ativo">
+        <div class="hero-card">
+          <div>
+            <h2>Prepare a convocação</h2>
+            <p>Defina data e horário. O modelo oficial é preservado e o BBCode é montado automaticamente.</p>
+          </div>
+         <div class="hero-symbol">
+  <i class="bi bi-people-fill"></i>
+</div>
+        </div>
+
+        <div class="content-grid two">
+          <section class="card">
+            <div class="section-title">
+              <span class="section-index">01</span>
+              <div>
+                <h3>Informações da reunião</h3>
+                <p>Campos obrigatórios para gerar a MP.</p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="campo">
+                <label for="reuniaoData">Data da Reunião</label>
+                <input id="reuniaoData" type="date">
+              </div>
+
+              <div class="campo">
+                <label for="reuniaoHora">Horário (Brasília)</label>
+                <input id="reuniaoHora" type="time">
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="btn primary" onclick="gerarReuniao()">Gerar BBCode</button>
+              <button class="btn ghost" onclick="limparReuniao()">Limpar campos</button>
+            </div>
+          </section>
+
+          <section class="card output-card">
+            <div class="section-title compact">
+              <span class="section-index pink-index">02</span>
+              <div>
+                <h3>Código final</h3>
+                <p>Pronto para copiar e publicar.</p>
+              </div>
+            </div>
+
+            <textarea id="saidaReuniao" class="saida" readonly placeholder="O BBCode gerado aparecerá aqui."></textarea>
+
+            <div class="output-actions">
+              <span id="statusReuniao" class="inline-status">Aguardando geração</span>
+              <button class="btn copy" onclick="copiarSaida('saidaReuniao', 'statusReuniao')">Copiar BBCode</button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- NOVIDADES -->
+      <section id="novidades" class="painel">
+        <div class="hero-card">
+          <div>
+            <h2>Monte o resumo da semana</h2>
+            <p>Organize propostas, promoções, destaques e promovidos na RCC em uma única mensagem.</p>
+          </div>
+          <div class="hero-symbol">
+  <i class="bi bi-newspaper"></i>
+</div>
+        </div>
+
+        <section class="card">
+          <div class="section-title">
+            <span class="section-index">01</span>
+            <div>
+              <h3>Período da semana</h3>
+              <p>Defina o intervalo exibido na mensagem.</p>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="campo">
+              <label for="novInicio">Início do período</label>
+              <input id="novInicio" type="date">
+            </div>
+            <div class="campo">
+              <label for="novFim">Fim do período</label>
+              <input id="novFim" type="date">
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div class="section-title compact">
+              <span class="section-index">02</span>
+              <div>
+                <h3>Propostas aprovadas</h3>
+                <p>Adicione somente as propostas que irão para a MP.</p>
+              </div>
+            </div>
+            <button class="add-btn" onclick="adicionarProposta('novPropostas')">+ Nova proposta</button>
+          </div>
+          <div id="novPropostas" class="dynamic-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div class="section-title compact">
+              <span class="section-index">03</span>
+              <div>
+                <h3>Promoções na Companhia</h3>
+                <p>Você pode repetir a mesma promoção; os nicks serão agrupados automaticamente no BBCode.</p>
+              </div>
+            </div>
+            <button class="add-btn" onclick="adicionarPromocao('novPromocoes')">+ Novo grupo</button>
+          </div>
+          <div id="novPromocoes" class="dynamic-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-title">
+            <span class="section-index">04</span>
+            <div>
+              <h3>Movimentações</h3>
+              <p>Novos membros e promovidos na RCC.</p>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="novNovos">Novos membros</label>
+            <textarea id="novNovos" placeholder="Ex.: João / Maria / José"></textarea>
+          </div>
+
+          <div class="subsection-head">
+            <div>
+              <strong>Promovidos na RCC</strong>
+              <small>Um registro por campo.</small>
+            </div>
+            <button class="add-btn small" onclick="adicionarPromovidoRCC()">+ Adicionar promovido</button>
+          </div>
+
+          <div id="novPromovidosRCC" class="dynamic-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-title">
+            <span class="section-index pink-index">05</span>
+            <div>
+              <h3>Destaques Semanais</h3>
+              <p>👁 Clique no ícone do olho para ativar/desativar cada destaque no BBCode.</p>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="highlight-card" data-destaque="instrutor">
+              <div class="highlight-head">
+                <span>INSTRUTOR</span>
+                <button id="toggleDestInstrutor" class="destaque-eye" data-enabled="true" onclick="alternarDestaque(this)" type="button" title="Desativar Instrutor no BBCode" aria-pressed="true"></button>
+              </div>
+              <input id="destInstrutorNick" placeholder="Nickname">
+              <input id="destInstrutorPontos" type="number" placeholder="Pontos">
+            </div>
+
+            <div class="highlight-card" data-destaque="avaliador">
+              <div class="highlight-head">
+                <span>AVALIADOR</span>
+                <button id="toggleDestAvaliador" class="destaque-eye" data-enabled="true" onclick="alternarDestaque(this)" type="button" title="Desativar Avaliador no BBCode" aria-pressed="true"></button>
+              </div>
+              <input id="destAvaliadorNick" placeholder="Nickname">
+              <input id="destAvaliadorPontos" type="number" placeholder="Pontos">
+            </div>
+
+            <div class="highlight-card" data-destaque="capacitador">
+              <div class="highlight-head">
+                <span>CAPACITADOR</span>
+                <button id="toggleDestCapacitador" class="destaque-eye" data-enabled="true" onclick="alternarDestaque(this)" type="button" title="Desativar Capacitador no BBCode" aria-pressed="true"></button>
+              </div>
+              <input id="destCapacitadorNick" placeholder="Nickname">
+              <input id="destCapacitadorPontos" type="number" placeholder="Pontos">
+            </div>
+          </div>
+        </section>
+
+        <section class="card output-card">
+          <div class="section-head">
+            <div class="section-title compact">
+              <span class="section-index pink-index">06</span>
+              <div>
+                <h3>BBCode das Novidades</h3>
+                <p>O modelo visual da postagem foi mantido.</p>
+              </div>
+            </div>
+
+            <div class="action-row no-margin">
+              <button class="btn ghost" onclick="limparNovidades()">Limpar</button>
+              <button class="btn primary" onclick="gerarNovidades()">Gerar</button>
+            </div>
+          </div>
+
+          <textarea id="saidaNovidades" class="saida tall" readonly placeholder="O BBCode gerado aparecerá aqui."></textarea>
+
+          <div class="output-actions">
+            <span id="statusNovidades" class="inline-status">Aguardando geração</span>
+            <button class="btn copy" onclick="copiarSaida('saidaNovidades', 'statusNovidades')">Copiar BBCode</button>
+          </div>
+        </section>
+      </section>
+
+
+      <!-- DESTAQUE SEMANAL -->
+      <section id="destaque-semanal" class="painel">
+        <div class="hero-card">
+          <div>
+            <h2>Reconheça o destaque da semana</h2>
+            <p>Defina o período do reconhecimento. O modelo oficial da MP é preservado e o BBCode é montado automaticamente.</p>
+          </div>
+          <div class="hero-symbol">
+            <i class="bi bi-award-fill"></i>
+          </div>
+        </div>
+
+        <div class="content-grid two">
+          <section class="card">
+            <div class="section-title">
+              <span class="section-index">01</span>
+              <div>
+                <h3>Período do destaque</h3>
+                <p>Informe o início e o fim da semana reconhecida.</p>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="campo">
+                <label for="destaqueInicio">Início do período</label>
+                <input id="destaqueInicio" type="date">
+              </div>
+
+              <div class="campo">
+                <label for="destaqueFim">Fim do período</label>
+                <input id="destaqueFim" type="date">
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button class="btn primary" onclick="gerarDestaqueSemanal()">Gerar BBCode</button>
+              <button class="btn ghost" onclick="limparDestaqueSemanal()">Limpar campos</button>
+            </div>
+          </section>
+
+          <section class="card output-card">
+            <div class="section-title compact">
+              <span class="section-index pink-index">02</span>
+              <div>
+                <h3>Código final</h3>
+                <p>Pronto para copiar e enviar por Mensagem Privada.</p>
+              </div>
+            </div>
+
+            <textarea id="saidaDestaqueSemanal" class="saida tall" readonly placeholder="O BBCode gerado aparecerá aqui."></textarea>
+
+            <div class="output-actions">
+              <span id="statusDestaqueSemanal" class="inline-status">Aguardando geração</span>
+              <button class="btn copy" onclick="copiarSaida('saidaDestaqueSemanal', 'statusDestaqueSemanal')">Copiar BBCode</button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ATA -->
+      <section id="ata" class="painel">
+        <div class="hero-card">
+          <div>
+            <h2>Registre a reunião</h2>
+            <p>Organize avisos, propostas, promoções e anexo antes de publicar a ata no fórum.</p>
+          </div>
+         <div class="hero-symbol">
+  <i class="bi bi-file-earmark-text-fill"></i>
+</div>
+        </div>
+
+        <section class="card">
+          <div class="section-title">
+            <span class="section-index">01</span>
+            <div>
+              <h3>Informações da reunião</h3>
+              <p>Data e horário que aparecerão no texto da ata.</p>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="campo">
+              <label for="ataData">Data da Reunião</label>
+              <input id="ataData" type="date">
+            </div>
+            <div class="campo">
+              <label for="ataHora">Horário (Brasília)</label>
+              <input id="ataHora" type="time">
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div class="section-title compact">
+              <span class="section-index">02</span>
+              <div>
+                <h3>Avisos e informações</h3>
+                <p>Crie quantos avisos forem necessários.</p>
+              </div>
+            </div>
+            <button class="add-btn" onclick="adicionarAviso('ataAvisos')">+ Novo aviso</button>
+          </div>
+          <div id="ataAvisos" class="dynamic-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div class="section-title compact">
+              <span class="section-index">03</span>
+              <div>
+                <h3>Propostas aprovadas</h3>
+                <p>Ordem, autor e descrição.</p>
+              </div>
+            </div>
+            <button class="add-btn" onclick="adicionarProposta('ataPropostas')">+ Nova proposta</button>
+          </div>
+          <div id="ataPropostas" class="dynamic-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-head">
+            <div class="section-title compact">
+              <span class="section-index">04</span>
+              <div>
+                <h3>Promoções na Companhia</h3>
+                <p>Você pode repetir a mesma promoção; os nicks serão agrupados automaticamente no BBCode.</p>
+              </div>
+            </div>
+            <button class="add-btn" onclick="adicionarPromocao('ataPromocoes')">+ Novo grupo</button>
+          </div>
+          <div id="ataPromocoes" class="dynamic-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="section-title">
+            <span class="section-index">05</span>
+            <div>
+              <h3>Complementos</h3>
+              <p>Novos membros e print da reunião.</p>
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="ataNovos">Novos membros</label>
+            <textarea id="ataNovos" placeholder="Ex.: João / Maria / José"></textarea>
+          </div>
+
+          <div class="campo">
+            <label for="ataAnexo">URL do anexo</label>
+            <input id="ataAnexo" placeholder="https://i.imgur.com/arquivo.png">
+          </div>
+        </section>
+
+        <section class="card output-card">
+          <div class="section-head">
+            <div class="section-title compact">
+              <span class="section-index pink-index">06</span>
+              <div>
+                <h3>BBCode da Ata</h3>
+                <p>Pronto para a postagem no fórum.</p>
+              </div>
+            </div>
+
+            <div class="action-row no-margin">
+              <button class="btn ghost" onclick="limparAta()">Limpar</button>
+              <button class="btn primary" onclick="gerarAta()">Gerar</button>
+            </div>
+          </div>
+
+          <textarea id="saidaAta" class="saida tall" readonly placeholder="O BBCode gerado aparecerá aqui."></textarea>
+
+          <div class="output-actions">
+            <span id="statusAta" class="inline-status">Aguardando geração</span>
+            <button class="btn copy" onclick="copiarSaida('saidaAta', 'statusAta')">Copiar BBCode</button>
+          </div>
+        </section>
+      </section>
+
+     <footer>
+  <div class="footer-content">
+    <div class="footer-dev">
+      <i class="bi bi-code-slash"></i>
+      Desenvolvido por <strong>Dr.Andrade.14</strong>
+      <i class="bi bi-code-slash"></i>
+    </div>
+
+    <div class="footer-rights">
+      Todos os direitos reservados à Companhia dos Instrutores
+    </div>
+  </div>
+</footer>
+
+  <script>
+/* ===== JavaScript incorporado de script.js ===== */
+const HIERARQUIA_INS = [
+  "Instrutor",
+  "Avaliador",
+  "Capacitador",
+  "Estagiário",
+  "Ministro",
+  "Vice-Líder",
+  "Líder"
+];
+
+const PROMOCOES_INS = HIERARQUIA_INS
+  .slice(0, -1)
+  .map((cargo, i) => `${cargo} > ${HIERARQUIA_INS[i + 1]}`);
+
+// ---------- NAVEGAÇÃO ----------
+document.querySelectorAll(".nav-item").forEach(botao => {
+  botao.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("ativa"));
+    document.querySelectorAll(".painel").forEach(p => p.classList.remove("ativo"));
+
+    botao.classList.add("ativa");
+    document.getElementById(botao.dataset.alvo).classList.add("ativo");
+
+    document.getElementById("moduleTitle").textContent = botao.dataset.title;
+    document.getElementById("moduleSubtitle").textContent = botao.dataset.subtitle;
+  });
+});
+
+// ---------- UTILITÁRIOS ----------
+function valor(id) {
+  return document.getElementById(id).value.trim();
+}
+
+function formatarData(valorData) {
+  if (!valorData) return "";
+
+  const meses = [
+    "Jan.", "Fev.", "Mar.", "Abr.", "Mai.", "Jun.",
+    "Jul.", "Ago.", "Set.", "Out.", "Nov.", "Dez."
+  ];
+
+  const [ano, mes, dia] = valorData.split("-");
+  return `${Number(dia)} ${meses[Number(mes) - 1]} ${ano}`;
+}
+
+function formatarDataDestaque(valorData) {
+  if (!valorData) return "";
+
+  const meses = [
+    "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+    "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+  ];
+
+  const [ano, mes, dia] = valorData.split("-");
+  return `${String(dia).padStart(2, "0")} ${meses[Number(mes) - 1]} ${ano}`;
+}
+
+function escapeHtmlAttr(texto) {
+  return String(texto)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function alternarDestaque(botao) {
+  const estavaAtivo = botao.dataset.enabled !== "false";
+  const agoraAtivo = !estavaAtivo;
+
+  botao.dataset.enabled = String(agoraAtivo);
+  botao.classList.toggle("desativada", !agoraAtivo);
+  botao.setAttribute("aria-pressed", String(agoraAtivo));
+
+  const card = botao.closest(".highlight-card");
+  if (card) card.classList.toggle("desativado", !agoraAtivo);
+
+  const nome = card?.querySelector(".highlight-head span")?.textContent || "destaque";
+  botao.title = agoraAtivo
+    ? `Desativar ${nome} no BBCode`
+    : `Ativar ${nome} no BBCode`;
+}
+
+function destaqueAtivo(id) {
+  const botao = document.getElementById(id);
+  return !botao || botao.dataset.enabled !== "false";
+}
+
+function resetarDestaques() {
+  [
+    "toggleDestInstrutor",
+    "toggleDestAvaliador",
+    "toggleDestCapacitador"
+  ].forEach(id => {
+    const botao = document.getElementById(id);
+    if (!botao) return;
+
+    botao.dataset.enabled = "true";
+    botao.classList.remove("desativada");
+    botao.setAttribute("aria-pressed", "true");
+
+    const card = botao.closest(".highlight-card");
+    if (card) card.classList.remove("desativado");
+  });
+}
+
+
+function removerItem(botao) {
+  botao.closest(".dynamic-item").remove();
+}
+
+function limparContainer(id) {
+  document.getElementById(id).innerHTML = "";
+}
+
+async function copiarSaida(id, statusId) {
+  const campo = document.getElementById(id);
+  const status = document.getElementById(statusId);
+
+  if (!campo.value.trim()) {
+    alert("Gere o BBCode antes de copiar.");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(campo.value);
+  } catch {
+    campo.select();
+    document.execCommand("copy");
+  }
+
+  status.textContent = "BBCode copiado para a área de transferência";
+  status.classList.add("ok");
+}
+
+function marcarGerado(statusId) {
+  const status = document.getElementById(statusId);
+  status.textContent = "BBCode gerado e pronto para copiar";
+  status.classList.add("ok");
+}
+
+// ---------- OPÇÕES ----------
+function opcoesPromocao(valorSelecionado = "") {
+  let html = `<option value="">Selecione a promoção</option>`;
+
+  PROMOCOES_INS.forEach(promocao => {
+    const selected = promocao === valorSelecionado ? "selected" : "";
+    html += `<option value="${promocao}" ${selected}>${promocao}</option>`;
+  });
+
+  return html;
+}
+
+// ---------- CAMPOS DINÂMICOS ----------
+function adicionarAviso(containerId, texto = "") {
+  const container = document.getElementById(containerId);
+  const item = document.createElement("div");
+
+  item.className = "dynamic-item";
+  item.innerHTML = `
+    <div class="item-fields one">
+      <input class="aviso-texto" placeholder="Digite o aviso" value="${escapeHtmlAttr(texto)}">
+    </div>
+    <button class="icon-btn" onclick="removerItem(this)" title="Remover">×</button>
+  `;
+
+  container.appendChild(item);
+}
+
+function adicionarProposta(containerId, ordem = "", autor = "", descricao = "") {
+  const container = document.getElementById(containerId);
+  const item = document.createElement("div");
+
+  item.className = "dynamic-item";
+  item.innerHTML = `
+    <div class="item-fields three">
+      <input
+        class="proposta-ordem"
+        inputmode="numeric"
+        placeholder="Ordem"
+        value="${escapeHtmlAttr(ordem)}"
+      >
+      <input class="proposta-autor" placeholder="Autor" value="${escapeHtmlAttr(autor)}">
+      <input class="proposta-descricao" placeholder="Descrição" value="${escapeHtmlAttr(descricao)}">
+    </div>
+    <button class="icon-btn" onclick="removerItem(this)" title="Remover">×</button>
+  `;
+
+  container.appendChild(item);
+}
+
+function adicionarPromocao(containerId, grupo = "", membros = "") {
+  const container = document.getElementById(containerId);
+  const item = document.createElement("div");
+
+  item.className = "dynamic-item";
+  item.innerHTML = `
+    <div class="item-fields two">
+      <select class="promocao-grupo">
+        ${opcoesPromocao(grupo)}
+      </select>
+      <input
+        class="promocao-membros"
+        placeholder="Ex.: Dr.Andrade.14 / Crebes"
+        value="${escapeHtmlAttr(membros)}"
+      >
+    </div>
+    <button class="icon-btn" onclick="removerItem(this)" title="Remover">×</button>
+  `;
+
+  container.appendChild(item);
+}
+
+function adicionarPromovidoRCC(texto = "") {
+  const container = document.getElementById("novPromovidosRCC");
+  const item = document.createElement("div");
+
+  item.className = "dynamic-item";
+  item.innerHTML = `
+    <div class="item-fields one">
+      <input
+        class="promovido-rcc"
+        placeholder="Ex.: victorzzkZ [Mou] 14 Abr. 2025..."
+        value="${escapeHtmlAttr(texto)}"
+      >
+    </div>
+    <button class="icon-btn" onclick="removerItem(this)" title="Remover">×</button>
+  `;
+
+  container.appendChild(item);
+}
+
+// ---------- COLETA ----------
+function coletarAvisos(containerId) {
+  return [...document.querySelectorAll(`#${containerId} .aviso-texto`)]
+    .map(el => el.value.trim())
+    .filter(Boolean);
+}
+
+function coletarPropostas(containerId) {
+  return [...document.querySelectorAll(`#${containerId} .dynamic-item`)]
+    .map(item => ({
+      ordem: item.querySelector(".proposta-ordem").value.trim(),
+      autor: item.querySelector(".proposta-autor").value.trim(),
+      descricao: item.querySelector(".proposta-descricao").value.trim()
+    }))
+    .filter(p => p.ordem || p.autor || p.descricao);
+}
+
+function coletarPromocoes(containerId) {
+  return [...document.querySelectorAll(`#${containerId} .dynamic-item`)]
+    .map(item => ({
+      grupo: item.querySelector(".promocao-grupo").value.trim(),
+      membros: item.querySelector(".promocao-membros").value.trim()
+    }))
+    .filter(p => p.grupo || p.membros);
+}
+
+function agruparPromocoes(promocoes) {
+  const grupos = new Map();
+
+  promocoes
+    .filter(p => p.grupo && p.membros)
+    .forEach(({ grupo, membros }) => {
+      if (!grupos.has(grupo)) grupos.set(grupo, []);
+
+      const lista = membros
+        .split("/")
+        .map(nome => nome.trim())
+        .filter(Boolean);
+
+      lista.forEach(nome => {
+        if (!grupos.get(grupo).includes(nome)) {
+          grupos.get(grupo).push(nome);
+        }
+      });
+    });
+
+  return [...grupos.entries()].map(([grupo, membros]) => ({
+    grupo,
+    membros
+  }));
+}
+
+function montarPromocoesBB(promocoes, corSeta) {
+  return agruparPromocoes(promocoes)
+    .map(({ grupo, membros }) => {
+      const linhas = membros
+        .map(nome => `[color=#${corSeta}]${corSeta === "00529e" ? "➥" : ">"}[/color] ${nome}`)
+        .join("\n");
+
+      return `[color=#0d4595][b][u]${grupo}[/u][/b][/color]\n${linhas}`;
+    })
+    .join("\n\n");
+}
+
+function coletarPromovidosRCC() {
+  return [...document.querySelectorAll("#novPromovidosRCC .promovido-rcc")]
+    .map(el => el.value.trim())
+    .filter(Boolean);
+}
+
+
+// ---------- REUNIÃO GERAL ----------
+function gerarReuniao() {
+  const data = formatarData(valor("reuniaoData"));
+  const horario = valor("reuniaoHora");
+
+  if (!data) return alert("Preencha a data da reunião.");
+  if (!horario) return alert("Preencha o horário da reunião.");
+
+  document.getElementById("saidaReuniao").value = `[center][table bgcolor="005fb2" style="border-radius: 20px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px #f233be;"][tr][td][img]https://2img.net/i.imgur.com/j1VjgeE.png[/img]
+
+[center][table bgcolor="#f8f8ff" style="border-radius: 14px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px #f233be;"][tr][td][center][table bgcolor="005fb2" style="border-radius: 14px 5px; overflow: hidden; width: 100%; box-shadow: 0 1px 2px #f233be;"][tr][td][color=#f8f8ff][size=18][font=Poppins][b][INS] REUNIÃO GERAL[/b][/font][/size][/color][/td][/tr][/table][/center]
+
+[font=Poppins][center][b]Saudações, [color=#005fb2]INSTRUTOR {USERNAME}[/color]![/b]
+
+Através desta Mensagem Privada, o [b][color=#005fb2]Setor de [color=#f233be]Relações[/color] Comunicativas[/color][/b] informa que a [b][color=#00529e]Reunião Geral[/color][/b] da companhia dos Instrutores irá ocorrer na data [b]${data}[/b], às [b]${horario}[/b] no horário de Brasília. A participação de todos os membros é fundamental para acompanhar as mudanças implementadas, anúncios relevantes e realização de promoções pelo ministério e pela liderança.
+
+[b]Contamos com a sua presença! [img(15px,15px)]https://2img.net/i.imgur.com/w5TUlt5.png[/img][/b][/center]
+
+[size=14][right][i]Atenciosamente,
+[color=#005fb2]Setor de [color=#f233be]Relações[/color] Comunicativas[/color][/i][/right][/size][/font][/td][/tr][/table][/center]
+
+[font=Poppins][size=12][color=#f8f8ff][b][img(10px,10px)]https://2img.net/i.imgur.com/GoqL8ud.png[/img] Reservam-se os direitos à Companhia dos Instrutores[/b][/size][/color][/font][/td][/tr][/table][/center]`;
+
+  marcarGerado("statusReuniao");
+}
+
+function limparReuniao() {
+  ["reuniaoData", "reuniaoHora", "saidaReuniao"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+
+  const status = document.getElementById("statusReuniao");
+  status.textContent = "Aguardando geração";
+  status.classList.remove("ok");
+}
+
+// ---------- NOVIDADES ----------
+function gerarNovidades() {
+  const inicio = formatarData(valor("novInicio"));
+  const fim = formatarData(valor("novFim"));
+
+  if (!inicio || !fim) return alert("Preencha o período da semana.");
+
+  const propostas = coletarPropostas("novPropostas");
+  const promocoes = coletarPromocoes("novPromocoes");
+  const novos = valor("novNovos");
+  const promovidosRcc = coletarPromovidosRCC();
+
+  const propostasBB = propostas
+    .filter(p => p.ordem || p.autor || p.descricao)
+    .map(p =>
+      `[color=#f233be]>[/color] [b]Ordem ${p.ordem}[/b] - ${p.autor}: ${p.descricao}`
+    ).join("\n");
+
+  const promocoesBB = montarPromocoesBB(promocoes, "f233be");
+
+  const destaques = [
+    {
+      cargo: "INSTRUTOR",
+      nick: valor("destInstrutorNick"),
+      pontos: valor("destInstrutorPontos"),
+      ativo: destaqueAtivo("toggleDestInstrutor")
+    },
+    {
+      cargo: "AVALIADOR",
+      nick: valor("destAvaliadorNick"),
+      pontos: valor("destAvaliadorPontos"),
+      ativo: destaqueAtivo("toggleDestAvaliador")
+    },
+    {
+      cargo: "CAPACITADOR",
+      nick: valor("destCapacitadorNick"),
+      pontos: valor("destCapacitadorPontos"),
+      ativo: destaqueAtivo("toggleDestCapacitador")
+    }
+  ].filter(d => d.ativo && d.nick);
+
+  const blocoPropostas = propostasBB
+    ? `[center][table bgcolor="#edf5fc" style="border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][center][table bgcolor="005fb2" style="border-radius: 14px 5px 14px 5px; overflow: hidden; width: 50%; box-shadow: 0 2px 4px #f233be;"][tr][td style="padding: 8px;"][color=#f8f8ff][size=14][b]Propostas aprovadas[/b][/size][/color][/td][/tr][/table][/center]
+
+Confira os comentários e vereditos dos projetos clicando [u][url=https://www.policiarcc.com/t36843-ins-transparencia-de-votos]aqui[/url][/u]!
+
+[justify]${propostasBB}[/justify][/td][/tr][/table][/center]
+
+`
+    : "";
+
+  const temPromocoesOuNovos = Boolean(promocoesBB || novos);
+  const blocoPromocoes = temPromocoesOuNovos
+    ? `[center][table bgcolor="#edf5fc" style="border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][center][table bgcolor="005fb2" style="border-radius: 14px 5px 14px 5px; overflow: hidden; width: 50%; box-shadow: 0 2px 4px #f233be;"][tr][td style="padding: 8px;"][color=#f8f8ff][size=14][b]Promoções[/b][/size][/color][/td][/tr][/table][/center]
+
+Confira os membros promovidos na semana!
+
+[justify]${promocoesBB}${promocoesBB && novos ? "\n\n" : ""}${novos ? `[color=#0d4595][b][u]Novos membros[/u][/b][/color]\n${novos}` : ""}[/justify][/td][/tr][/table][/center]
+
+`
+    : "";
+
+  let blocoDestaques = "";
+
+  if (destaques.length) {
+    const cabecalho = destaques
+      .map(d => `[td bgcolor="#005fb2"][b][color=white]${d.cargo}[/color][/b][/td]`)
+      .join("\n");
+
+    const dados = destaques.map(d => {
+      const avatar = `http://www.habbo.com.br/habbo-imaging/avatarimage?&user=${encodeURIComponent(d.nick)}&action=wav&direction=2&head_direction=3&img_format=png&gesture=sml&frame=1&headonly=0&size=m`;
+
+      return `[td][img]${avatar}[/img]
+
+[center]${d.nick}
+[b][color=#f233be]${d.pontos || "0"}[/color] pontos[/b][/center][/td]`;
+    }).join("\n");
+
+    blocoDestaques = `[center][table bgcolor="#edf5fc" style="border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][center][table bgcolor="005fb2" style="border-radius: 14px 5px 14px 5px; overflow: hidden; width: 50%; box-shadow: 0 2px 4px #f233be;"][tr][td style="padding: 8px;"][color=#f8f8ff][size=14][b]Destaques Semanais[/b][/size][/color][/td][/tr][/table][/center]
+
+Confira os membros que se destacaram e alcançaram o primeiro lugar em seus cargos!
+
+[center][table bgcolor="#f0f4f5" style="border-radius: 10px; overflow: hidden; width: 90%;"]
+[tr]
+${cabecalho}
+[/tr]
+[tr]
+${dados}
+[/tr]
+[/table][/center]
+[/td][/tr][/table][/center]
+
+`;
+  }
+
+  const promovidosTexto = promovidosRcc
+    .map(nome => `[color=#f233be]>[/color] [b]${nome}[/b]`)
+    .join("\n");
+
+  const blocoPromovidos = promovidosTexto
+    ? `[center][table bgcolor="#edf5fc" style="border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][center][table bgcolor="005fb2" style="border-radius: 14px 5px 14px 5px; overflow: hidden; width: 50%; box-shadow: 0 2px 4px #f233be;"][tr][td style="padding: 8px;"][color=#f8f8ff][size=14][b]Promovidos na RCC[/b][/size][/color][/td][/tr][/table][/center]
+
+Confira os instrutores que nos representaram no oficialato nesta semana!
+
+[justify]${promovidosTexto}[/justify][/td][/tr][/table][/center]
+
+`
+    : "";
+
+  document.getElementById("saidaNovidades").value = `[center][table bgcolor="005fb2" style="border-radius: 20px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px #f233be;"][tr][td][img]https://2img.net/i.imgur.com/j1VjgeE.png[/img]
+[center][table bgcolor="#f8f8ff" style="border-radius: 14px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px #f233be;"][tr][td][center][table bgcolor="005fb2" style="border-radius: 14px 5px; overflow: hidden; width: 100%; box-shadow: 0 1px 2px #f233be;"][tr][td][color=#f8f8ff][size=18][font=Poppins][b] NOVIDADES DA SEMANA[/b][/font][/size][/color][/td][/tr][/table][/center]
+
+[font=Poppins][center][b]Saudações, [color=#005fb2]INSTRUTOR {USERNAME}[/color]![/b]
+
+Através desta Mensagem Privada, o [b][color=#005fb2]Setor de [color=#f233be]Relações[/color] Comunicativas[/color][/b] lhe atualiza sobre tudo que foi anunciado na semana referente a [b]${inicio} até ${fim}[/b]. Confira abaixo todas as propostas aprovadas, promoções e os destaques da semana![/center]
+
+${blocoPropostas}${blocoPromocoes}${blocoDestaques}${blocoPromovidos}[/font][/td][/tr][/table][/center]
+
+[font=Poppins][size=12][color=#f8f8ff][b][img(10px,10px)]https://2img.net/i.imgur.com/GoqL8ud.png[/img] Reservam-se os direitos à Companhia dos Instrutores[/b][/size][/color][/font][/td][/tr][/table][/center]`;
+
+  marcarGerado("statusNovidades");
+}
+
+function limparNovidades() {
+  [
+    "novInicio", "novFim", "novNovos",
+    "destInstrutorNick", "destInstrutorPontos",
+    "destAvaliadorNick", "destAvaliadorPontos",
+    "destCapacitadorNick", "destCapacitadorPontos",
+    "saidaNovidades"
+  ].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+
+  limparContainer("novPropostas");
+  limparContainer("novPromocoes");
+  limparContainer("novPromovidosRCC");
+
+  adicionarProposta("novPropostas");
+  adicionarPromocao("novPromocoes");
+  adicionarPromovidoRCC();
+
+  const status = document.getElementById("statusNovidades");
+  status.textContent = "Aguardando geração";
+  status.classList.remove("ok");
+
+}
+
+
+// ---------- DESTAQUE SEMANAL ----------
+function gerarDestaqueSemanal() {
+  const inicio = formatarDataDestaque(valor("destaqueInicio"));
+  const fim = formatarDataDestaque(valor("destaqueFim"));
+
+  if (!inicio || !fim) return alert("Preencha o período do Destaque Semanal.");
+
+  document.getElementById("saidaDestaqueSemanal").value = `[center][table  bgcolor="005fb2" style="border-radius: 20px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px #f233be;"][tr][td][img]https://i.imgur.com/j1VjgeE.png[/img]
+[center][table  bgcolor="#f8f8ff" style="border-radius: 14px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px #f233be;"][tr][td][center][table  bgcolor="005fb2" style="border-radius: 14px 5px; overflow: hidden; width: 100%; box-shadow: 0 1px 2px #f233be;"][tr][td][color=#f8f8ff][size=18][font=Poppins][b] DESTAQUE SEMANAL[/b][/font][/size][/color][/td][/tr][/table][/center]
+
+[font=Poppins][center][b]Saudações, [color=#005fb2]INSTRUTOR {USERNAME}[/color]![/b]
+
+Através desta Mensagem Privada, é com grande satisfação que a [color=#005fb2][b]Companhia dos Instrutores[/b][/color] parabeniza você por ter alcançado o grande título de [b]Destaque Semanal[/b] da companhia, referente à semana [b]${inicio}[/b] até [b]${fim}[/b]! Parabéns pela conquista, que este reconhecimento seja apenas um dos muitos frutos do seu esforço dentro da RCC![/center]
+
+[center][table         bgcolor="#edf5fc" style="border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][center][table     bgcolor="005fb2" style="border-radius: 14px 5px 14px 5px; overflow: hidden; width: 50%; box-shadow: 0 2px 4px #f233be;"][tr][td style="padding: 8px;"][color=#f8f8ff][size=14][b]Benefícios[/b][/size][/color][/td][/tr][/table][/center]
+
+Todo o seu empenho nesta semana não passou despercebido e são dignos de reconhecimento, como forma de lhe prestigiar, informamos os seguintes benefícios que lhe foram concedidos:
+
+[justify][color=#f233be]➢[/color] Exposição do seu avatar (bot) no Corredor da Companhia por [b]7 dias[/b];
+[color=#f233be]➢[/color] Concessão do emblema [b][RCC] Melhor Policial do Mês[/b], favoritado por 7 dias;
+[color=#f233be]➢[/color] [b]20 medalhas temporárias[/b];
+[color=#f233be]➢[/color] Concessão da [b]medalha de honra por 24horas[/b].
+
+Obs: O grupo e a medalha só podem serem usadas a partir da divulgação realizada pelo Departamento de Comunicação, na terça-feira à noite.
+
+[center]O emblema pode ser localizado no perfil dos líderes do Departamento de Comunicações: Sir.Sirius / ,Raity / dIzn.[/center]
+[center][img(120px,80px)]https://imgur.com/GsAXLT7.png[/img][/center]
+[/justify][/td][/tr][/table][/center]
+
+[size=14][right][i]Atenciosamente,
+[color=#005fb2]Setor de [color=#f233be]Relações[/color] Comunicativas[/color][/i][/right][/size][/font][/td][/tr][/table][/center]
+
+[font=Poppins][size=12][color=#f8f8ff][b][img(10px,10px)]https://i.imgur.com/GoqL8ud.png[/img] Reservam-se os direitos à Companhia dos Instrutores[/b][/size][/color][/font][/td][/tr][/table][/center]`;
+
+  marcarGerado("statusDestaqueSemanal");
+}
+
+function limparDestaqueSemanal() {
+  ["destaqueInicio", "destaqueFim", "saidaDestaqueSemanal"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+
+  const status = document.getElementById("statusDestaqueSemanal");
+  status.textContent = "Aguardando geração";
+  status.classList.remove("ok");
+}
+
+// ---------- ATA ----------
+function gerarAta() {
+  const data = formatarData(valor("ataData"));
+  const horario = valor("ataHora");
+
+  if (!data) return alert("Preencha a data da reunião.");
+  if (!horario) return alert("Preencha o horário.");
+
+  const avisos = coletarAvisos("ataAvisos");
+  const propostas = coletarPropostas("ataPropostas");
+  const promocoes = coletarPromocoes("ataPromocoes");
+  const novos = valor("ataNovos");
+  const anexo = valor("ataAnexo");
+
+  const avisosBB = avisos
+    .map(a => `[color=#00529e]➥[/color] ${a}`)
+    .join("\n");
+
+  const propostasBB = propostas
+    .filter(p => p.ordem || p.autor || p.descricao)
+    .map(p => `[color=#00529e]➥[/color] [b]Ordem ${p.ordem}[/b] - ${p.autor}: ${p.descricao}`)
+    .join("\n");
+
+  const promocoesBB = montarPromocoesBB(promocoes, "00529e");
+
+  const blocoAvisos = avisosBB
+    ? `[center][table bgcolor="#edf5fc" style="border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][center][table bgcolor="00529e" style="border-radius: 14px 5px; overflow: hidden; width: 40%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td style="padding: 9px;"][color=#f8f8ff][size=14][b]Avisos e informações importantes[/b][/size][/color][/td][/tr][/table][/center]
+
+Confira os avisos divulgados na reunião da semana vigente!
+
+[justify]${avisosBB}[/justify][/td][/tr][/table][/center]
+
+`
+    : "";
+
+  const blocoPropostas = propostasBB
+    ? `[center][table bgcolor="#edf5fc" style="border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][center][table bgcolor="00529e" style="border-radius: 14px 5px; overflow: hidden; width: 40%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td style="padding: 9px;"][color=#f8f8ff][size=14][b]Propostas aprovadas[/b][/size][/color][/td][/tr][/table][/center]
+
+Confira os projetos enviados pelos Instrutores a fim de contribuir com o crescimento da companhia!
+
+[justify]${propostasBB}[/justify][/td][/tr][/table][/center]
+
+`
+    : "";
+
+  const temPromocoesOuNovos = Boolean(promocoesBB || novos);
+  const blocoPromocoes = temPromocoesOuNovos
+    ? `[center][table bgcolor="#edf5fc" style="border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][center][table bgcolor="00529e" style="border-radius: 14px 5px; overflow: hidden; width: 40%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td style="padding: 9px;"][color=#f8f8ff][size=14][b]Promoções[/b][/size][/color][/td][/tr][/table][/center]
+
+Confira os membros promovidos na semana!
+
+[justify]${promocoesBB}${promocoesBB && novos ? "\n\n" : ""}${novos ? `[color=#0d4595][b][u]Novos membros[/u][/b][/color]\n${novos}` : ""}[/justify][/td][/tr][/table][/center]
+
+`
+    : "";
+
+  const blocoAnexo = anexo
+    ? `[center][table bgcolor="#edf5fc" style="border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][center][table bgcolor="00529e" style="border-radius: 14px 5px; overflow: hidden; width: 40%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td style="padding: 9px;"][color=#f8f8ff][size=14][b]Anexos[/b][/size][/color][/td][/tr][/table][/center]
+
+Confira o print da reunião da nossa família!
+
+[spoiler=Anexo][center][table bgcolor="#f0f4f5" style="border-radius: 10px; overflow: hidden; width: 90%;"]
+[tr]
+[td bgcolor="#ffffff"][img]${anexo}[/img][/td]
+[/tr]
+[/table][/center]
+[/spoiler]
+[/td][/tr][/table][/center]
+
+`
+    : "";
+
+  document.getElementById("saidaAta").value = `[center][table bgcolor="00529e" border="1" style="border-color: black; border-radius: 23px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][img]https://2img.net/i.imgur.com/n3Y0d1g.gif[/img]
+
+[center][table bgcolor="#f8f8ff" border="1" style="border-color: black; border-radius: 16px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][font=Poppins][center][table bgcolor="00529e" border="1" style="border-radius: 14px 5px; overflow: hidden; width: 100%; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);"][tr][td][color=#f8f8ff][size=18][b][INS] ATA DA REUNIÃO[/b][/size][/color][/td][/tr][/table][/center][/font]
+
+[font=Poppins][size=14][b]Saudações, [b][color=#00529e]instrutor[/color] {USERNAME}[/b]![/b][/size]
+
+Seja muito bem vindo(a) a [b]Ata da Reunião[/b]! Caso tenha perdido algo da reunião do dia [b]${data}[/b], realizada às [b]${horario}BR[/b], você pode checar aqui! Neste tópico, são colocadas as informações abordadas durante as reuniões gerais, sejam avisos e mudanças na companhia, projetos aprovados, e/ou promoções e informações adicionais que ocorreram ao longo da semana com os membros da nossa companhia.
+
+${blocoAvisos}${blocoPropostas}${blocoPromocoes}${blocoAnexo}[/td][/tr][/table][/center]
+[/font]
+[font=Poppins][size=12][color=#f8f8ff][b][img(10px,10px)]https://2img.net/i.imgur.com/GoqL8ud.png[/img] Reservam-se os direitos à Companhia dos Instrutores[/b][/size][/color][/font][/td][/tr][/table][/center]`;
+
+  marcarGerado("statusAta");
+}
+
+function limparAta() {
+  ["ataData", "ataHora", "ataNovos", "ataAnexo", "saidaAta"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+
+  limparContainer("ataAvisos");
+  limparContainer("ataPropostas");
+  limparContainer("ataPromocoes");
+
+  adicionarAviso("ataAvisos");
+  adicionarProposta("ataPropostas");
+  adicionarPromocao("ataPromocoes");
+
+  const status = document.getElementById("statusAta");
+  status.textContent = "Aguardando geração";
+  status.classList.remove("ok");
+
+}
+
+// ---------- ESTADO INICIAL ----------
+adicionarProposta("novPropostas");
+adicionarPromocao("novPromocoes");
+adicionarPromovidoRCC();
+
+adicionarAviso("ataAvisos");
+adicionarProposta("ataPropostas");
+adicionarPromocao("ataPromocoes");
+  </script>
+</body>
+</html>
